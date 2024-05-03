@@ -44,9 +44,9 @@ class Cloupe(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Cloupe: {self.user1.email} - {self.user2.email}"
+        return f"{self.user1.email} - {self.user2.email}"
 
-class SpecialDate(models.Model):
+class CoupleSpecialDate(models.Model):
     name = models.CharField(max_length=255)
     date = models.DateField()
     created = models.DateTimeField(auto_now_add=True)
