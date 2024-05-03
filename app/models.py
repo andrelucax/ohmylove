@@ -59,6 +59,7 @@ class CoupleMessage(models.Model):
     message = models.CharField(max_length=500)
     created = models.DateTimeField(auto_now_add=True)
     cloupe = models.ForeignKey(Cloupe, on_delete=models.CASCADE, related_name='messages')
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='message-creator')
 
     def __str__(self):
         return self.message

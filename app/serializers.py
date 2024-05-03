@@ -33,7 +33,7 @@ class CloupeCreateSerializer(serializers.Serializer):
 class CoupleMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = CoupleMessage
-        fields = ['id', 'message', 'created']
+        fields = ['id', 'message', 'created', 'creator']
 
 class CoupleSpecialDateSerializer(serializers.ModelSerializer):
     class Meta:

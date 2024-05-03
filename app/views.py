@@ -40,7 +40,7 @@ class CoupleMessageCreateAPIView(generics.CreateAPIView):
         user = self.request.user
         cloupe = Cloupe.objects.filter(user1=user) | Cloupe.objects.filter(user2=user)
         if cloupe.exists():
-            serializer.save(cloupe=cloupe.first())
+            serializer.save(cloupe=cloupe.first(), creator=user)
         else:
             raise PermissionDenied({'error': 'No couple found'})
         
@@ -52,7 +52,7 @@ class CoupleMessageDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     def get_object(self):
         obj = super().get_object()
         user = self.request.user
-        if user != obj.cloupe.user1 and user != obj.cloupe.user2:
+        if user != obj.creator:
             raise PermissionDenied({'error': 'Permission denied'})
         return obj
     
