@@ -25,6 +25,7 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
+    created = models.DateTimeField(auto_now_add=True)
     username = None
     first_name = None
     last_name = None
@@ -40,6 +41,42 @@ class User(AbstractUser):
 class Cloupe(models.Model):
     user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cloupe_user_1')
     user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cloupe_user_2')
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Cloupe: {self.user1.email} - {self.user2.email}"
+
+class SpecialDate(models.Model):
+    name = models.CharField(max_length=255)
+    date = models.DateField()
+    created = models.DateTimeField(auto_now_add=True)
+    cloupe = models.ForeignKey(Cloupe, on_delete=models.CASCADE, related_name='special_dates')
+
+    def __str__(self):
+        return f"{self.name} - {self.date}"
+    
+class CoupleMessage(models.Model):
+    message = models.CharField(max_length=500)
+    created = models.DateTimeField(auto_now_add=True)
+    cloupe = models.ForeignKey(Cloupe, on_delete=models.CASCADE, related_name='messages')
+
+    def __str__(self):
+        return self.message
+    
+class CoupleWishList(models.Model):
+    message = models.CharField(max_length=255)
+    completed = models.BooleanField()
+    created = models.DateTimeField(auto_now_add=True)
+    cloupe = models.ForeignKey(Cloupe, on_delete=models.CASCADE, related_name='wishlists')
+
+    def __str__(self):
+        return self.message
+    
+class CoupleImage(models.Model):
+    name = models.CharField(max_length=255)
+    file = models.FileField(upload_to='couple_images')
+    created = models.DateTimeField(auto_now_add=True)
+    cloupe = models.ForeignKey(Cloupe, on_delete=models.CASCADE, related_name='images')
+
+    def __str__(self):
+        return self.name
