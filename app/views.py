@@ -1,11 +1,12 @@
-from app.serializers import LoginSerializer
-from rest_framework import status
+from app.serializers import LoginSerializer, CloupeCreateSerializer, CoupleMessageSerializer
+from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAdminUser
-from .serializers import CloupeCreateSerializer
+from rest_framework.exceptions import PermissionDenied
+from .models import Cloupe, CoupleMessage
 
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
@@ -30,3 +31,27 @@ class CloupeCreateView(APIView):
             couple = serializer.save()
             return Response({'id': couple.id}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CoupleMessageCreateAPIView(generics.CreateAPIView):
+    serializer_class = CoupleMessageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        cloupe = Cloupe.objects.filter(user1=user) | Cloupe.objects.filter(user2=user)
+        if cloupe.exists():
+            serializer.save(cloupe=cloupe.first())
+        else:
+            raise PermissionDenied({'error': 'No couple found'})
+        
+class CoupleMessageDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CoupleMessage.objects.all()
+    serializer_class = CoupleMessageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        obj = super().get_object()
+        user = self.request.user
+        if user != obj.cloupe.user1 and user != obj.cloupe.user2:
+            raise PermissionDenied({'error': 'Permission denied'})
+        return obj

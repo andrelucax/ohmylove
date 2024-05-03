@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cloupe, User
+from .models import Cloupe, User, CoupleMessage
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 
@@ -19,13 +19,18 @@ class CloupeCreateSerializer(serializers.Serializer):
             user1 = User.objects.get(email=email1)
             user2 = User.objects.get(email=email2)
         except ObjectDoesNotExist:
-            raise serializers.ValidationError("Invalid couple")
+            raise serializers.ValidationError({'error': 'Invalid couple'})
 
         if Cloupe.objects.filter(
             Q(user1=user1) | Q(user2=user1) |
             Q(user1=user2) | Q(user2=user2)
         ).exists():
-            raise serializers.ValidationError("Invalid couple")
+            raise serializers.ValidationError({'error': 'Invalid couple'})
 
         cloupe = Cloupe.objects.create(user1=user1, user2=user2)
         return cloupe
+    
+class CoupleMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CoupleMessage
+        fields = ['id', 'message', 'created']
