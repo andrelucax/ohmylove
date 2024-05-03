@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginView, CloupeCreateView, CoupleMessageCreateAPIView, CoupleMessageDetailAPIView, CoupleSpecialDateCreateAPIView, CoupleSpecialDateDetailAPIView, CoupleWishListCreateAPIView, CoupleWishListDetailAPIView, CoupleImageCreateAPIView, CoupleImageDetailAPIView
+from .views import LoginView, CloupeCreateView, CoupleMessageCreateAPIView, CoupleMessageDetailAPIView, CoupleSpecialDateCreateAPIView, CoupleSpecialDateDetailAPIView, CoupleWishListCreateAPIView, CoupleWishListDetailAPIView, CoupleImageCreateAPIView, CoupleImageDetailAPIView, CoupleMessageOfTheDayAPIView
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
@@ -12,4 +12,5 @@ urlpatterns = [
     path('couple-wishlist/<int:pk>/', CoupleWishListDetailAPIView.as_view(), name='couple_wishlist_item_detail'),
     path('couple-images/create/', CoupleImageCreateAPIView.as_view(), name='create_couple_image'),
     path('couple-images/<int:pk>/', CoupleImageDetailAPIView.as_view(), name='couple_image_detail'),
+    path('message-of-the-day/', CoupleMessageOfTheDayAPIView.as_view(), name='message_of_the_day'),
 ]

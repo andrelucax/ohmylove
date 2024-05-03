@@ -7,6 +7,9 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAdminUser
 from rest_framework.exceptions import PermissionDenied
 from .models import Cloupe, CoupleMessage, CoupleSpecialDate, CoupleWishList, CoupleImage
+from django.utils import timezone
+from django.core.cache import cache
+import random
 
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
@@ -126,3 +129,42 @@ class CoupleImageDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         if user != obj.cloupe.user1 and user != obj.cloupe.user2:
             raise PermissionDenied({'error': 'Permission denied'})
         return obj
+    
+class CoupleMessageOfTheDayAPIView(APIView):
+    def get(self, request):
+        today = timezone.localdate()
+        cached_data = cache.get('message_of_the_day')
+
+        if cached_data and cached_data.get('date') == today:
+            return Response(cached_data)
+        
+        message = self.get_random_message(request.user)
+        image = self.get_random_image(request.user)
+
+        data = {
+            'message': message,
+            'image': image,
+            'date': today,
+        }
+
+        cache.set('message_of_the_day', data)
+
+        return Response(data)
+
+    def get_random_message(self, user):
+        couple = Cloupe.objects.filter(user1=user) | Cloupe.objects.filter(user2=user)
+        if couple.exists():
+            couple_messages = couple.first().messages.all().exclude(creator=user)
+            if couple_messages.exists():
+                random_message = random.choice(couple_messages)
+                return CoupleMessageSerializer(random_message).data
+        return None
+
+    def get_random_image(self, user):
+        couple = Cloupe.objects.filter(user1=user) | Cloupe.objects.filter(user2=user)
+        if couple.exists():
+            couple_images = couple.first().images.all()
+            if couple_images.exists():
+                random_image = random.choice(couple_images)
+                return random_image.file.url
+        return None
