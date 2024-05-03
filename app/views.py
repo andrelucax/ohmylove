@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
+from rest_framework.permissions import IsAdminUser
+from .serializers import CloupeCreateSerializer
 
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
@@ -17,4 +19,14 @@ class LoginView(APIView):
                 return Response({'token': token.key}, status=status.HTTP_200_OK)
             else:
                 return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CloupeCreateView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def post(self, request, format=None):
+        serializer = CloupeCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            couple = serializer.save()
+            return Response({'id': couple.id}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
