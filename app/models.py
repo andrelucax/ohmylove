@@ -38,8 +38,8 @@ class User(AbstractUser):
         return self.email
 
 class Cloupe(models.Model):
-    user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cloupe_user1')
-    user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cloupe_user2')
+    user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cloupe_user_1')
+    user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cloupe_user_2')
 
     def __str__(self):
         return f"Cloupe: {self.user1.email} - {self.user2.email}"
