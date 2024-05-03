@@ -1,5 +1,10 @@
 # Oh!Mylove
 
+## Installing dependencies
+```sh
+pip install -r requirements.txt
+```
+
 ## Running project
 ```sh
 python manage.py runserver
