@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cloupe, User, CoupleMessage
+from .models import Cloupe, User, CoupleMessage, CoupleSpecialDate, CoupleWishList, CoupleImage
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 
@@ -34,3 +34,18 @@ class CoupleMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = CoupleMessage
         fields = ['id', 'message', 'created']
+
+class CoupleSpecialDateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CoupleSpecialDate
+        fields = ['id', 'name', 'date', 'created']
+
+class CoupleWishListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CoupleWishList
+        fields = ['id', 'message', 'completed', 'created']
+
+class CoupleImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CoupleImage
+        fields = ['id', 'name', 'file', 'created']
