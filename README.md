@@ -11,5 +11,5 @@ python manage.py runserver
 ```
 
 ## Development environment
-python 3.12.3
-pip 24.0
+* python 3.12.3
+* pip 24.0
