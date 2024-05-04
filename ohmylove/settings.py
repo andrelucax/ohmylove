@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ['SECRET_KEY']
 
-DEBUG = os.environ['DEBUG']
+DEBUG = os.environ['DEBUG'] == "true"
 
 ALLOWED_HOSTS = [os.environ['ALLOWED_HOST']]
 
