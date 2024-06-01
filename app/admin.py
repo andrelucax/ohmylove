@@ -3,7 +3,6 @@ from .models import User, Cloupe, CoupleSpecialDate, CoupleMessage, CoupleWishLi
 
 admin.site.register(User)
 
-# TODO remove
 admin.site.register(Cloupe)
 admin.site.register(CoupleSpecialDate)
 admin.site.register(CoupleMessage)
