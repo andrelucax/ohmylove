@@ -8,7 +8,6 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.exceptions import PermissionDenied
 from .models import Cloupe, CoupleMessage, CoupleSpecialDate, CoupleWishList, CoupleImage
 from django.utils import timezone
-from django.core.cache import cache
 import random
 
 class LoginView(APIView):
@@ -132,22 +131,13 @@ class CoupleImageDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     
 class CoupleMessageOfTheDayAPIView(APIView):
     def get(self, request):
-        today = timezone.localdate()
-        cached_data = cache.get('message_of_the_day')
-
-        if cached_data and cached_data.get('date') == today:
-            return Response(cached_data)
-        
         message = self.get_random_message(request.user)
         image = self.get_random_image(request.user)
 
         data = {
             'message': message,
             'image': image,
-            'date': today,
         }
-
-        cache.set('message_of_the_day', data)
 
         return Response(data)
 
