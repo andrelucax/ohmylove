@@ -9,6 +9,8 @@ from rest_framework.exceptions import PermissionDenied
 from .models import Cloupe, CoupleMessage, CoupleSpecialDate, CoupleWishList, CoupleImage
 from django.utils import timezone
 import random
+import boto3
+from django.conf import settings
 
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
@@ -132,11 +134,11 @@ class CoupleImageDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class CoupleMessageOfTheDayAPIView(APIView):
     def get(self, request):
         message = self.get_random_message(request.user)
-        image = self.get_random_image(request.user)
+        imageUrl = self.get_random_image(request.user)
 
         data = {
             'message': message,
-            'image': image,
+            'image': imageUrl,
         }
 
         return Response(data)
@@ -156,5 +158,21 @@ class CoupleMessageOfTheDayAPIView(APIView):
             couple_images = couple.first().images.all()
             if couple_images.exists():
                 random_image = random.choice(couple_images)
-                return random_image.file.url
+                return generate_presigned_url(random_image.file.name)
         return None
+    
+def generate_presigned_url(file_name):
+    s3_client = boto3.client('s3',
+        region_name=settings.AWS_S3_REGION_NAME,
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+
+    response = s3_client.generate_presigned_url('get_object',
+        Params={
+            'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
+            'Key': file_name
+        },
+        ExpiresIn=86400 # 1 day
+    )
+
+    return response
