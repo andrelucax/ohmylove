@@ -99,6 +99,7 @@ class CoupleWishListCreateAPIView(generics.CreateAPIView):
 class CoupleWishListDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CoupleWishList.objects.all()
     serializer_class = CoupleWishListSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
         obj = super().get_object()
@@ -123,6 +124,7 @@ class CoupleImageCreateAPIView(generics.CreateAPIView):
 class CoupleImageDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CoupleImage.objects.all()
     serializer_class = CoupleImageSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
         obj = super().get_object()
@@ -132,6 +134,8 @@ class CoupleImageDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         return obj
     
 class CoupleMessageOfTheDayAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
     def get(self, request):
         message = self.get_random_message(request.user)
         imageUrl = self.get_random_image(request.user)
