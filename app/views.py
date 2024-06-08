@@ -162,10 +162,15 @@ class CoupleMessageOfTheDayAPIView(APIView):
             couple_images = couple.first().images.all()
             if couple_images.exists():
                 random_image = random.choice(couple_images)
+                image_url = ""
                 if settings.DEBUG:
-                    return settings.SITE_URL + random_image.file.url
+                    image_url = settings.SITE_URL + random_image.file.url
                 else:
-                    return generate_presigned_url(random_image.file.name)
+                    image_url = generate_presigned_url(random_image.file.name)
+                return {
+                    "url": image_url,
+                    "name": random_image.name
+                }
         return None
     
 def generate_presigned_url(file_name):
