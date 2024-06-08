@@ -60,6 +60,16 @@ class CoupleMessageDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
             raise PermissionDenied({'error': 'Permission denied'})
         return obj
     
+class CoupleSpecialDateListAPIView(generics.ListAPIView):
+    queryset = CoupleSpecialDate.objects.all()
+    serializer_class = CoupleSpecialDateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        cloupe = get_user_cloupe(user)
+        return CoupleSpecialDate.objects.filter(cloupe=cloupe)
+    
 class CoupleSpecialDateCreateAPIView(generics.CreateAPIView):
     serializer_class = CoupleSpecialDateSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -188,3 +198,10 @@ def generate_presigned_url(file_name):
     )
 
     return response
+
+def get_user_cloupe(user):
+    cloupe = Cloupe.objects.filter(user1=user) | Cloupe.objects.filter(user2=user)
+    if cloupe.exists():
+        return cloupe.first()
+    else:
+        raise PermissionDenied({'error': 'No couple found'})
