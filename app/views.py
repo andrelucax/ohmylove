@@ -94,6 +94,16 @@ class CoupleSpecialDateDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
             raise PermissionDenied({'error': 'Permission denied'})
         return obj
     
+class CoupleWishListListAPIView(generics.ListAPIView):
+    queryset = CoupleWishList.objects.all()
+    serializer_class = CoupleWishListSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        cloupe = get_user_cloupe(user)
+        return CoupleWishList.objects.filter(cloupe=cloupe, completed=False)
+
 class CoupleWishListCreateAPIView(generics.CreateAPIView):
     serializer_class = CoupleWishListSerializer
     permission_classes = [permissions.IsAuthenticated]

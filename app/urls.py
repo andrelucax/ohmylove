@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import LoginView, CloupeCreateView, CoupleMessageCreateAPIView, CoupleMessageDetailAPIView, CoupleSpecialDateCreateAPIView, CoupleSpecialDateDetailAPIView, CoupleWishListCreateAPIView, CoupleWishListDetailAPIView, CoupleImageCreateAPIView, CoupleImageDetailAPIView, CoupleMessageOfTheDayAPIView, CoupleSpecialDateListAPIView
+from .views import LoginView, CloupeCreateView, CoupleMessageCreateAPIView, CoupleMessageDetailAPIView, CoupleSpecialDateCreateAPIView, CoupleSpecialDateDetailAPIView, CoupleWishListCreateAPIView, CoupleWishListDetailAPIView, CoupleImageCreateAPIView, CoupleImageDetailAPIView, CoupleMessageOfTheDayAPIView, CoupleSpecialDateListAPIView, CoupleWishListListAPIView
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
@@ -9,6 +9,7 @@ urlpatterns = [
     path('couple-specialdates/', CoupleSpecialDateListAPIView.as_view(), name='list_couple_special_date'),
     path('couple-specialdates/create/', CoupleSpecialDateCreateAPIView.as_view(), name='create_couple_special_date'),
     path('couple-specialdates/<int:pk>/', CoupleSpecialDateDetailAPIView.as_view(), name='couple_special_date_detail'),
+    path('couple-wishlist/', CoupleWishListListAPIView.as_view(), name='list_couple_wishlist_item'),
     path('couple-wishlist/create/', CoupleWishListCreateAPIView.as_view(), name='create_couple_wishlist_item'),
     path('couple-wishlist/<int:pk>/', CoupleWishListDetailAPIView.as_view(), name='couple_wishlist_item_detail'),
     path('couple-images/create/', CoupleImageCreateAPIView.as_view(), name='create_couple_image'),
